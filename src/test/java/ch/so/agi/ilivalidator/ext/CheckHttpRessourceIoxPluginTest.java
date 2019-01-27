@@ -46,7 +46,7 @@ public class CheckHttpRessourceIoxPluginTest {
     }
     
     @Test
-    public void simpleArguments_Ok(){
+    public void checkHttpRessource_Ok(){
         Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         iomObjA.setattrvalue("attr2", "fubar");
         iomObjA.setattrvalue("attr3", "http://www.google.ch");
