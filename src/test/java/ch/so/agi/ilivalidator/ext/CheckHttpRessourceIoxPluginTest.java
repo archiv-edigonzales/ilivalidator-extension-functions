@@ -33,6 +33,7 @@ public class CheckHttpRessourceIoxPluginTest {
     private final static String ILI_TOPIC="SO_FunctionsExt.Topic";
     // CLASS
     private final static String ILI_CLASSA=ILI_TOPIC+".ClassA";
+    private final static String ILI_CLASSB=ILI_TOPIC+".ClassB";
     // START BASKET EVENT
     private final static String BID1="b1";
     
@@ -49,8 +50,8 @@ public class CheckHttpRessourceIoxPluginTest {
     public void checkHttpRessource_Ok(){
         Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         iomObjA.setattrvalue("attr2", "fubar");
-        iomObjA.setattrvalue("attr3", "http://www.google.ch");
-        iomObjA.setattrvalue("attr4", "https://www.so.ch");
+        iomObjA.setattrvalue("attr3", "https://www.google.ch");
+        iomObjA.setattrvalue("attr4", "https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/65-Aedermannsdorf/Entscheide/65-5-E.pdf");
         ValidationConfig modelConfig = new ValidationConfig();
         modelConfig.mergeIliMetaAttrs(td);
         LogCollector logger = new LogCollector();
@@ -65,9 +66,32 @@ public class CheckHttpRessourceIoxPluginTest {
         validator.validate(new ObjectEvent(iomObjA));
         validator.validate(new EndBasketEvent());
         validator.validate(new EndTransferEvent());
-
-//        assertTrue(logger.getErrs().size()==0);
+        
+        assertTrue(logger.getErrs().size()==0);
     }
 
+    @Test
+    public void checkHttpRessource_WithPrefix_Ok(){
+        Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSB, OBJ_OID1);
+        iomObjA.setattrvalue("attr2", "https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/");
+        iomObjA.setattrvalue("attr3", "65-Aedermannsdorf/Entscheide/65-5-E.pdf");
+        iomObjA.setattrvalue("attr4", "65-Aedermannsdorf/Entscheide/65-5-E.pdf");
+        ValidationConfig modelConfig = new ValidationConfig();
+        modelConfig.mergeIliMetaAttrs(td);
+        LogCollector logger = new LogCollector();
+        LogEventFactory errFactory = new LogEventFactory();
+        Settings settings = new Settings();
+        Map<String,Class> newFunctions = new HashMap<String,Class>();
+        newFunctions.put("SO_FunctionsExt.checkHttpRessource", CheckHttpRessourceIoxPlugin.class);
+        settings.setTransientObject(Validator.CONFIG_CUSTOM_FUNCTIONS, newFunctions);
+        Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
+        validator.validate(new StartTransferEvent());
+        validator.validate(new StartBasketEvent(ILI_TOPIC,BID1));
+        validator.validate(new ObjectEvent(iomObjA));
+        validator.validate(new EndBasketEvent());
+        validator.validate(new EndTransferEvent());
+        
+        assertTrue(logger.getErrs().size()==0);
+    }
 
 }
