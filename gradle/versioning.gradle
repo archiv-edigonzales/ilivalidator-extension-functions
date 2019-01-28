@@ -27,7 +27,7 @@ class ProjectVersion {
         if(build) {
             fullVersion += ".$build"
         }    
-        //fullVersion
-        "1.0.0-SNAPSHOT"
+        fullVersion
+        //"1.0.0-SNAPSHOT"
     }
 }
