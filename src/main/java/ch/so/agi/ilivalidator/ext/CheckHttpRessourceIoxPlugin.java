@@ -19,8 +19,6 @@ public class CheckHttpRessourceIoxPlugin implements InterlisFunction {
     
     @Override
     public Value evaluate(String validationKind, String usageScope, IomObject mainObj, Value[] actualArguments) {
-        System.err.println("evaluate");
-
         if (actualArguments[0].skipEvaluation()) {
             return actualArguments[0];
         }
@@ -28,10 +26,11 @@ public class CheckHttpRessourceIoxPlugin implements InterlisFunction {
             return Value.createSkipEvaluation();
         }
 
-        String value = actualArguments[0].getValue();
+        String urlValue = actualArguments[0].getValue();
+        String prefixValue = actualArguments[1].getValue();
         
         try {
-            URL siteURL = new URL(value);
+            URL siteURL = new URL(prefixValue + urlValue);
             HttpURLConnection connection = (HttpURLConnection) siteURL.openConnection();
             // HEAD does not work in our environment and returns a 405 status code. It seems a SES thing.
             connection.setRequestMethod("GET");
@@ -40,10 +39,6 @@ public class CheckHttpRessourceIoxPlugin implements InterlisFunction {
     
             int responseCode = connection.getResponseCode();
 
-            System.err.println("*********");
-            System.err.println(value);
-            System.err.println(responseCode);
-
             if (200 <= responseCode && responseCode <= 399) {
                 return new Value(true); 
             } else {
@@ -51,7 +46,6 @@ public class CheckHttpRessourceIoxPlugin implements InterlisFunction {
             }
             
         } catch (IOException e) {
-            e.printStackTrace();
             logger.addEvent(logger.logErrorMsg(e.getMessage()));
             return new Value(false);
         } 
@@ -67,8 +61,7 @@ public class CheckHttpRessourceIoxPlugin implements InterlisFunction {
             IoxValidationConfig validationConfig, ObjectPool objectPool, 
             LogEventFactory logEventFactory) {
         
-        System.err.println("init");
-
+        logger=logEventFactory;
     }
 
 }

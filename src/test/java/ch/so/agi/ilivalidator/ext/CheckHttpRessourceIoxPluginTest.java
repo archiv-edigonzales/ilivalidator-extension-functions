@@ -33,7 +33,6 @@ public class CheckHttpRessourceIoxPluginTest {
     private final static String ILI_TOPIC="SO_FunctionsExt.Topic";
     // CLASS
     private final static String ILI_CLASSA=ILI_TOPIC+".ClassA";
-    private final static String ILI_CLASSB=ILI_TOPIC+".ClassB";
     // START BASKET EVENT
     private final static String BID1="b1";
     
@@ -49,7 +48,7 @@ public class CheckHttpRessourceIoxPluginTest {
     @Test
     public void checkHttpRessource_Ok(){
         Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
-        iomObjA.setattrvalue("attr2", "fubar");
+        iomObjA.setattrvalue("attr2", "");
         iomObjA.setattrvalue("attr3", "https://www.google.ch");
         iomObjA.setattrvalue("attr4", "https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/65-Aedermannsdorf/Entscheide/65-5-E.pdf");
         ValidationConfig modelConfig = new ValidationConfig();
@@ -72,7 +71,7 @@ public class CheckHttpRessourceIoxPluginTest {
 
     @Test
     public void checkHttpRessource_WithPrefix_Ok(){
-        Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSB, OBJ_OID1);
+        Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         iomObjA.setattrvalue("attr2", "https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/");
         iomObjA.setattrvalue("attr3", "65-Aedermannsdorf/Entscheide/65-5-E.pdf");
         iomObjA.setattrvalue("attr4", "65-Aedermannsdorf/Entscheide/65-5-E.pdf");
@@ -93,5 +92,55 @@ public class CheckHttpRessourceIoxPluginTest {
         
         assertTrue(logger.getErrs().size()==0);
     }
+    
+    @Test
+    public void checkHttpRessource_WithPrefix_Fail(){
+        Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
+        iomObjA.setattrvalue("attr2", "fubar");
+        iomObjA.setattrvalue("attr3", "65-Aedermannsdorf/Entscheide/65-5-E.pdf");
+        iomObjA.setattrvalue("attr4", "65-Aedermannsdorf/Entscheide/65-5-E.pdf");
+        ValidationConfig modelConfig = new ValidationConfig();
+        modelConfig.mergeIliMetaAttrs(td);
+        LogCollector logger = new LogCollector();
+        LogEventFactory errFactory = new LogEventFactory();
+        Settings settings = new Settings();
+        Map<String,Class> newFunctions = new HashMap<String,Class>();
+        newFunctions.put("SO_FunctionsExt.checkHttpRessource", CheckHttpRessourceIoxPlugin.class);
+        settings.setTransientObject(Validator.CONFIG_CUSTOM_FUNCTIONS, newFunctions);
+        Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
+        validator.validate(new StartTransferEvent());
+        validator.validate(new StartBasketEvent(ILI_TOPIC,BID1));
+        validator.validate(new ObjectEvent(iomObjA));
+        validator.validate(new EndBasketEvent());
+        validator.validate(new EndTransferEvent());
 
+        assertTrue(logger.getErrs().size()==4); // TODO: why 4? Lines of error messages?
+    }
+    
+    @Test
+    public void checkHttpRessource_Fail(){
+        Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
+        iomObjA.setattrvalue("attr2", "");
+        iomObjA.setattrvalue("attr3", "https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/65-Aedermannsdorf/Entscheide/65-5-FOO.pdf");
+        iomObjA.setattrvalue("attr4", "https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/65-Aedermannsdorf/Entscheide/65-5-BAR.pdf");
+        ValidationConfig modelConfig = new ValidationConfig();
+        modelConfig.mergeIliMetaAttrs(td);
+        LogCollector logger = new LogCollector();
+        LogEventFactory errFactory = new LogEventFactory();
+        Settings settings = new Settings();
+        Map<String,Class> newFunctions = new HashMap<String,Class>();
+        newFunctions.put("SO_FunctionsExt.checkHttpRessource", CheckHttpRessourceIoxPlugin.class);
+        settings.setTransientObject(Validator.CONFIG_CUSTOM_FUNCTIONS, newFunctions);
+        Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
+        validator.validate(new StartTransferEvent());
+        validator.validate(new StartBasketEvent(ILI_TOPIC,BID1));
+        validator.validate(new ObjectEvent(iomObjA));
+        validator.validate(new EndBasketEvent());
+        validator.validate(new EndTransferEvent());
+        
+        System.out.println("****");
+        System.out.println(logger.getErrs().size());
+        
+        assertTrue(logger.getErrs().size()==2); 
+    }
 }

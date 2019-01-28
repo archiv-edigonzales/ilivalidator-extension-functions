@@ -1,9 +1,15 @@
 plugins {
     id 'java-library'
+    id 'com.jfrog.artifactory' version '4.9.0'
 }
+
+apply from: "$rootDir/gradle/versioning.gradle"
+apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+group = 'ch.so.agi.ilivalidator'
 
 repositories {
     jcenter()
@@ -16,3 +22,28 @@ dependencies {
     api 'ch.interlis:ili2c-tool:4.7.7'
     testImplementation 'junit:junit:4.12'
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+artifactory {
+    contextUrl = 'https://artifactory.sogeo.services/artifactory'
+    publish {
+        repository {
+            repoKey = 'libs-snapshot-local'  
+            username = System.env.artifactoryUser  
+            password = System.env.artifactoryPass  
+        }
+        defaults {
+            publications('mavenJava')
+            publishArtifacts = true
+            publishPom = true
+        }
+    }
+}
+
