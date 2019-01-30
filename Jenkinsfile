@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Prepare') {
             steps {
-                git "https://github.com/edigonzales/ilivalidator-fn-http-ressource-check.git"
+                git "https://github.com/edigonzales/ilivalidator-extension-functions.git"
             }
         }
         
