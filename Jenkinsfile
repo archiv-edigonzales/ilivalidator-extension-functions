@@ -3,6 +3,11 @@
 pipeline {
     agent any
 
+    environment {
+        artifactoryUser = credentials('artifactoryUser')
+        artifactoryPass = credentials('artifactoryPass')
+    }    
+
     stages {
         stage('Prepare') {
             steps {
@@ -29,6 +34,11 @@ pipeline {
                 ]                
             }
         }
+         stage('Publish') {
+            steps {
+                sh './gradlew --no-daemon build jar artifactoryPublish -x test'                
+            }
+        }                 
     }
     post {
         always {
