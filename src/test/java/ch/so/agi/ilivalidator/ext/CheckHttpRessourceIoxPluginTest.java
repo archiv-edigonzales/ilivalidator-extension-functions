@@ -138,9 +138,6 @@ public class CheckHttpRessourceIoxPluginTest {
         validator.validate(new EndBasketEvent());
         validator.validate(new EndTransferEvent());
         
-        System.out.println("****");
-        System.out.println(logger.getErrs().size());
-        
         assertTrue(logger.getErrs().size()==2); 
     }
 }
