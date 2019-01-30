@@ -35,7 +35,7 @@ artifactory {
     contextUrl = 'https://artifactory.sogeo.services/artifactory'
     publish {
         repository {
-            repoKey = 'libs-snapshot-local'  
+            repoKey = 'libs-release-local'  
             username = System.env.artifactoryUser  
             password = System.env.artifactoryPass  
         }
