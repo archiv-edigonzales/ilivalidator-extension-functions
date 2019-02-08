@@ -89,7 +89,9 @@ bintray {
     user = System.env.bintrayUser
     key = System.env.bintrayKey
     publications = ['mavenPublication']
-
+    publish = true
+    labels = ['interlis', 'ilivalidator', 'validation']
+    
     pkg {
         repo = 'ilivalidator-extension-functions'
         name = 'ilivalidator-extension-functions'
