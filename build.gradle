@@ -1,6 +1,5 @@
 plugins {
     id 'java-library'
-    //id 'com.jfrog.artifactory' version '4.9.0'
     id "com.jfrog.bintray" version "1.8.4"
 }
 
@@ -105,34 +104,4 @@ bintray {
         }
     }
 }
-
-
-
-
-
-/*
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-}
-
-artifactory {
-    contextUrl = 'https://artifactory.sogeo.services/artifactory'
-    publish {
-        repository {
-            repoKey = 'libs-release-local'  
-            username = System.env.artifactoryUser  
-            password = System.env.artifactoryPass  
-        }
-        defaults {
-            publications('mavenJava')
-            publishArtifacts = true
-            publishPom = true
-        }
-    }
-}
-*/
 
