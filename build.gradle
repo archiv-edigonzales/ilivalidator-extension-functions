@@ -90,13 +90,13 @@ bintray {
     key = System.env.bintrayKey
     publications = ['mavenPublication']
     publish = true
-    labels = ['interlis', 'ilivalidator', 'validation']
     
     pkg {
         repo = 'ilivalidator-extension-functions'
         name = 'ilivalidator-extension-functions'
         userOrg = 'sogis'
         licenses = ['MIT']
+        labels = ['interlis', 'ilivalidator', 'validation']        
         vcsUrl = githubRepoUrl
         version {
             name = project.version
