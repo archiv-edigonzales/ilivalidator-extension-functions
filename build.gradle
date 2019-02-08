@@ -40,12 +40,12 @@ artifacts {
     archives javadocJar
 }
 
+def githubRepoUrl = "https://github.com/sogis/ilivalidator-extension-functions"
 def pomConfig = {
     licenses {
         license {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution "repo"
+            name "MIT License"
+            url "https://github.com/sogis/ilivalidator-extension-functions/blob/master/LICENSE"
         }
     }
     developers {
@@ -57,7 +57,7 @@ def pomConfig = {
     }
 
     scm {
-        url "https://github.com/edigonzales/ilivalidator-extension-functions"
+        url githubRepoUrl
     }
 }
 
@@ -78,7 +78,7 @@ publishing {
                 def root = asNode()
                 root.appendNode('description', 'Extension functions for ilivalidator')
                 root.appendNode('name', 'ilivalidator-extension-functions')
-                root.appendNode('url', 'https://github.com/edigonzales/ilivalidator-extension-functions')
+                root.appendNode('url', githubRepoUrl)
                 root.children().last() + pomConfig
             }
         }
@@ -86,18 +86,16 @@ publishing {
 }
 
 bintray {
-    //user = System.getProperty('bintrayUser')
-    //key = System.getProperty('bintrayKey')
-    user = "edigonzales"
-    key = "ab5bdb0d4fe9ae4a2fad68dfdace521008c0cc6a"
+    user = System.env.bintrayUser
+    key = System.env.bintrayKey
     publications = ['mavenPublication']
 
     pkg {
         repo = 'ilivalidator-extension-functions'
         name = 'ilivalidator-extension-functions'
-        //userOrg = 'reflectoring'
+        userOrg = 'sogis'
         licenses = ['MIT']
-        vcsUrl = 'https://github.com/edigonzales/ilivalidator-extension-functions'
+        vcsUrl = githubRepoUrl
         version {
             name = project.version
             desc = project.version
