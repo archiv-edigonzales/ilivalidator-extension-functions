@@ -3,6 +3,7 @@ CONTRACTED MODEL SO_FunctionsExt
   AT "mailto:stefan.ziegler@bd.so.ch" VERSION "2019-01-27" =
   
     FUNCTION checkHttpRessource (url: TEXT; prefix: TEXT): BOOLEAN;
+    FUNCTION hasUniqueAttributePairs (Objects: OBJECTS OF ANYCLASS; attrName1: TEXT; attrName2: TEXT): BOOLEAN;
     
     TOPIC Topic =
             
@@ -17,6 +18,15 @@ CONTRACTED MODEL SO_FunctionsExt
             !!@ ilivalid.msg = "Dokument '{attr2}{attr4}' wurde nicht gefunden."            
             MANDATORY CONSTRAINT checkHttpRessource(attr4, attr2);
         END ClassA;
+        
+        CLASS ClassB =
+            attr1 : TEXT;
+            attr2 : TEXT;
+            !!@ name = hasUniqueAttributePairs
+            !!@ ilivalid.msg = "Fubar '{attr1} - {attr2}' Fubar."
+            SET CONSTRAINT hasUniqueAttributePairs(ALL, "attr1", "attr2");
+        END ClassB;
+        
                       
     END Topic;
     

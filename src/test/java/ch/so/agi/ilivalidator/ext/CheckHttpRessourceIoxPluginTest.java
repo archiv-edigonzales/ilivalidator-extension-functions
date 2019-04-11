@@ -46,7 +46,7 @@ public class CheckHttpRessourceIoxPluginTest {
     }
     
     @Test
-    public void checkHttpRessource_Ok(){
+    public void checkHttpRessource_Ok() {
         Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         iomObjA.setattrvalue("attr2", "");
         iomObjA.setattrvalue("attr3", "https://www.google.ch");
@@ -65,12 +65,12 @@ public class CheckHttpRessourceIoxPluginTest {
         validator.validate(new ObjectEvent(iomObjA));
         validator.validate(new EndBasketEvent());
         validator.validate(new EndTransferEvent());
-        
+                
         assertTrue(logger.getErrs().size()==0);
     }
 
     @Test
-    public void checkHttpRessource_WithPrefix_Ok(){
+    public void checkHttpRessource_WithPrefix_Ok() {
         Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         iomObjA.setattrvalue("attr2", "https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/");
         iomObjA.setattrvalue("attr3", "65-Aedermannsdorf/Entscheide/65-5-E.pdf");
@@ -90,11 +90,13 @@ public class CheckHttpRessourceIoxPluginTest {
         validator.validate(new EndBasketEvent());
         validator.validate(new EndTransferEvent());
         
-        assertTrue(logger.getErrs().size()==0);
+        // size=1 because of 'invalid format of INTERLIS.URI value <65-Aedermannsdorf/Entscheide/65-5-E.pdf> in attribute attr4'
+        // This was introduced after ilivalidator 1.8.1
+        assertTrue(logger.getErrs().size()==1);
     }
     
     @Test
-    public void checkHttpRessource_WithPrefix_Fail(){
+    public void checkHttpRessource_WithPrefix_Fail() {
         Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         iomObjA.setattrvalue("attr2", "fubar");
         iomObjA.setattrvalue("attr3", "65-Aedermannsdorf/Entscheide/65-5-E.pdf");
@@ -114,11 +116,13 @@ public class CheckHttpRessourceIoxPluginTest {
         validator.validate(new EndBasketEvent());
         validator.validate(new EndTransferEvent());
 
-        assertTrue(logger.getErrs().size()==4); // TODO: why 4? Lines of error messages?
+        // size=5 because of 'invalid format of INTERLIS.URI value <65-Aedermannsdorf/Entscheide/65-5-E.pdf> in attribute attr4'
+        // This was introduced after ilivalidator 1.8.1
+        assertTrue(logger.getErrs().size()==5); // TODO: why 5? Lines of error messages?
     }
     
     @Test
-    public void checkHttpRessource_Fail(){
+    public void checkHttpRessource_Fail() {
         Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         iomObjA.setattrvalue("attr2", "");
         iomObjA.setattrvalue("attr3", "https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/65-Aedermannsdorf/Entscheide/65-5-FOO.pdf");
