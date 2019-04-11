@@ -30,7 +30,11 @@ public class HasUniqueAttributePairsIoxPlugin implements InterlisFunction {
         System.out.println(mainObj.getattrname(0));
 
         System.out.println("--------------");
+        // mainObj vergleichen mit actualArguments[0].getComplexObjects()
         
+        // https://github.com/AgenciaImplementacion/iliValidator_custom_plugins/blob/master/src/main/java/co/interlis/topology/TopologyCache.java
+        // falls Cache benötigt wird.
+        // 
         
         
         return new Value(true);
