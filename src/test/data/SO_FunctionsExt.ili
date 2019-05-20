@@ -4,20 +4,4 @@ CONTRACTED MODEL SO_FunctionsExt
   
     FUNCTION checkHttpRessource (url: TEXT; prefix: TEXT): BOOLEAN;
     
-    TOPIC Topic =
-            
-        CLASS ClassA =
-            attr2 : TEXT;
-            attr3 : TEXT;
-            attr4 : URI;
-            !!@ name = checkHttpRessource1
-            !!@ ilivalid.msg = "Dokument '{attr2}{attr3}' wurde nicht gefunden."
-            MANDATORY CONSTRAINT checkHttpRessource(attr3, attr2);
-            !!@ name = checkHttpRessource2
-            !!@ ilivalid.msg = "Dokument '{attr2}{attr4}' wurde nicht gefunden."            
-            MANDATORY CONSTRAINT checkHttpRessource(attr4, attr2);
-        END ClassA;
-                      
-    END Topic;
-    
 END SO_FunctionsExt.
