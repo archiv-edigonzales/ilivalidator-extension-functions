@@ -30,7 +30,7 @@ public class CheckHttpRessourceIoxPluginTest {
     // OID
     private final static String OBJ_OID1 ="o1";
     // MODEL
-    private final static String ILI_TOPIC="SO_FunctionsExt.Topic";
+    private final static String ILI_TOPIC="Testmodel.Topic";
     // CLASS
     private final static String ILI_CLASSA=ILI_TOPIC+".ClassA";
     // START BASKET EVENT
@@ -39,8 +39,14 @@ public class CheckHttpRessourceIoxPluginTest {
     @Before
     public void setUp() throws Exception {
         Configuration ili2cConfig = new Configuration();
-        FileEntry fileEntry = new FileEntry("src/test/data/SO_FunctionsExt.ili", FileEntryKind.ILIMODELFILE);
-        ili2cConfig.addFileEntry(fileEntry);
+        {
+            FileEntry fileEntry = new FileEntry("src/test/data/SO_FunctionsExt.ili", FileEntryKind.ILIMODELFILE);
+            ili2cConfig.addFileEntry(fileEntry);
+        }
+        {
+            FileEntry fileEntry = new FileEntry("src/test/data/Testmodel.ili", FileEntryKind.ILIMODELFILE);
+            ili2cConfig.addFileEntry(fileEntry);
+        }
         td = ch.interlis.ili2c.Ili2c.runCompiler(ili2cConfig);
         assertNotNull(td);
     }

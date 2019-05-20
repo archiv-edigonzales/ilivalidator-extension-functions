@@ -1,0 +1,18 @@
+INTERLIS 2.3;
+
+MODEL GB2AV (de)
+   AT "mailto:stefan.ziegler@bd.so.ch" VERSION "2019-05-20" =
+   IMPORTS SO_AVGBS_FunctionsExt;
+
+  TOPIC Mutationstabelle =
+    CLASS AVMutation =
+      Beschrieb : TEXT*50;
+      DateinamePlan : TEXT*80;
+      !!@ name = pdfnameMatchesDateinameplan
+      !!@ ilivalid.msg = "Dateinameplan '{DateinamePlan}' im XML passt nicht zum Namen des gelieferten PDF."
+      MANDATORY CONSTRAINT SO_AVGBS_FunctionsExt.pdfnameMatchesDateinameplan(DateinamePlan);
+    END AVMutation;
+  END Mutationstabelle;
+
+END GB2AV.
+   
