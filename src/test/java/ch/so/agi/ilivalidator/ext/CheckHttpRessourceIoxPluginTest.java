@@ -30,7 +30,7 @@ public class CheckHttpRessourceIoxPluginTest {
     // OID
     private final static String OBJ_OID1 ="o1";
     // MODEL
-    private final static String ILI_TOPIC="SO_FunctionsExt.Topic";
+    private final static String ILI_TOPIC="Testmodel.Topic";
     // CLASS
     private final static String ILI_CLASSA=ILI_TOPIC+".ClassA";
     // START BASKET EVENT
@@ -39,14 +39,20 @@ public class CheckHttpRessourceIoxPluginTest {
     @Before
     public void setUp() throws Exception {
         Configuration ili2cConfig = new Configuration();
-        FileEntry fileEntry = new FileEntry("src/test/data/SO_FunctionsExt.ili", FileEntryKind.ILIMODELFILE);
-        ili2cConfig.addFileEntry(fileEntry);
+        {
+            FileEntry fileEntry = new FileEntry("src/test/data/SO_FunctionsExt.ili", FileEntryKind.ILIMODELFILE);
+            ili2cConfig.addFileEntry(fileEntry);
+        }
+        {
+            FileEntry fileEntry = new FileEntry("src/test/data/Testmodel.ili", FileEntryKind.ILIMODELFILE);
+            ili2cConfig.addFileEntry(fileEntry);
+        }
         td = ch.interlis.ili2c.Ili2c.runCompiler(ili2cConfig);
         assertNotNull(td);
     }
     
     @Test
-    public void checkHttpRessource_Ok(){
+    public void checkHttpRessource_Ok() {
         Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         iomObjA.setattrvalue("attr2", "");
         iomObjA.setattrvalue("attr3", "https://www.google.ch");
@@ -65,12 +71,12 @@ public class CheckHttpRessourceIoxPluginTest {
         validator.validate(new ObjectEvent(iomObjA));
         validator.validate(new EndBasketEvent());
         validator.validate(new EndTransferEvent());
-        
+                
         assertTrue(logger.getErrs().size()==0);
     }
 
     @Test
-    public void checkHttpRessource_WithPrefix_Ok(){
+    public void checkHttpRessource_WithPrefix_Ok() {
         Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         iomObjA.setattrvalue("attr2", "https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/");
         iomObjA.setattrvalue("attr3", "65-Aedermannsdorf/Entscheide/65-5-E.pdf");
@@ -90,11 +96,14 @@ public class CheckHttpRessourceIoxPluginTest {
         validator.validate(new EndBasketEvent());
         validator.validate(new EndTransferEvent());
         
+        // size=1 because of 'invalid format of INTERLIS.URI value <65-Aedermannsdorf/Entscheide/65-5-E.pdf> in attribute attr4'
+        // This was introduced after ilivalidator 1.8.1
+//        assertTrue(logger.getErrs().size()==1);
         assertTrue(logger.getErrs().size()==0);
     }
     
     @Test
-    public void checkHttpRessource_WithPrefix_Fail(){
+    public void checkHttpRessource_WithPrefix_Fail() {
         Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         iomObjA.setattrvalue("attr2", "fubar");
         iomObjA.setattrvalue("attr3", "65-Aedermannsdorf/Entscheide/65-5-E.pdf");
@@ -114,11 +123,14 @@ public class CheckHttpRessourceIoxPluginTest {
         validator.validate(new EndBasketEvent());
         validator.validate(new EndTransferEvent());
 
-        assertTrue(logger.getErrs().size()==4); // TODO: why 4? Lines of error messages?
+        // size=5 because of 'invalid format of INTERLIS.URI value <65-Aedermannsdorf/Entscheide/65-5-E.pdf> in attribute attr4'
+        // This was introduced after ilivalidator 1.8.1
+//        assertTrue(logger.getErrs().size()==5); // TODO: why 5? Lines of error messages?
+        assertTrue(logger.getErrs().size()==4); // TODO: why 5? Lines of error messages?
     }
     
     @Test
-    public void checkHttpRessource_Fail(){
+    public void checkHttpRessource_Fail() {
         Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         iomObjA.setattrvalue("attr2", "");
         iomObjA.setattrvalue("attr3", "https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/65-Aedermannsdorf/Entscheide/65-5-FOO.pdf");
