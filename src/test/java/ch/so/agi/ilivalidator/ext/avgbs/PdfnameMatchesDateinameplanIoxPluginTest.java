@@ -25,7 +25,7 @@ import ch.interlis.iox_j.validator.ValidationConfig;
 import ch.interlis.iox_j.validator.Validator;
 import ch.so.agi.ilivalidator.ext.LogCollector;
 
-public class PdfnameMatchesDateinameplanPluginTest {
+public class PdfnameMatchesDateinameplanIoxPluginTest {
     private TransferDescription td=null;
     // OID
     private final static String OBJ_OID1 ="o1";
@@ -62,7 +62,7 @@ public class PdfnameMatchesDateinameplanPluginTest {
         LogEventFactory errFactory = new LogEventFactory();
         Settings settings = new Settings();
         Map<String,Class> newFunctions = new HashMap<String,Class>();
-        newFunctions.put("SO_AVGBS_FunctionsExt.pdfnameMatchesDateinameplan", PdfnameMatchesDateinameplanPlugin.class);
+        newFunctions.put("SO_AVGBS_FunctionsExt.pdfnameMatchesDateinameplan", PdfnameMatchesDateinameplanIoxPlugin.class);
         settings.setTransientObject(Validator.CONFIG_CUSTOM_FUNCTIONS, newFunctions);
         Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
         validator.validate(new StartTransferEvent());

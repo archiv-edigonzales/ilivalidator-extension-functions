@@ -18,7 +18,8 @@ repositories {
 }
 
 dependencies {
-    api 'ch.interlis:iox-ili:1.20.4'
+    //api 'ch.interlis:iox-ili:1.20.4'
+    api 'ch.interlis:iox-ili:1.20.12-SNAPSHOT'
     api 'ch.interlis:ili2c-tool:4.7.7'
     testImplementation 'junit:junit:4.12'
 }

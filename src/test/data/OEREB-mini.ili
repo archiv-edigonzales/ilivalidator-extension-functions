@@ -1,0 +1,27 @@
+INTERLIS 2.3;
+
+MODEL OEREB (de)
+   AT "mailto:stefan.ziegler@bd.so.ch" VERSION "2019-05-26" =
+   IMPORTS SO_OEREB_FunctionsExt;
+
+  TOPIC Vorschriften =
+    CLASS Dokument =
+      TextImWeb : TEXT*1024;
+      Titel : TEXT*1024;
+      !! !!@ name = DocumentsSelfLoopCheck
+      !! !!@ ilivalid.msg = "gaga"
+      !!SET CONSTRAINT SO_OEREB_FunctionsExt.documentsSelfLoopCheck(ALL, TextImWeb, Titel);
+      !!SET CONSTRAINT SO_OEREB_FunctionsExt.documentsSelfLoopCheck(ALL);
+    END Dokument;
+    
+    ASSOCIATION HinweisWeitereDokumente =
+      Ursprung -- {0..*} Dokument;
+      Hinweis -- {0..*} Dokument;
+      !!@ name = DocumentsSelfLoopCheck
+      !! !!@ ilivalid.msg = "Es sind falsche Verknüpfungen (self loops) vorhanden."      
+      SET CONSTRAINT SO_OEREB_FunctionsExt.documentsSelfLoopCheck(ALL);
+    END HinweisWeitereDokumente;  
+    
+  END Vorschriften;
+
+END OEREB.

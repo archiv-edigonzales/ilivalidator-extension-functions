@@ -9,7 +9,7 @@ import ch.interlis.iox_j.validator.InterlisFunction;
 import ch.interlis.iox_j.validator.ObjectPool;
 import ch.interlis.iox_j.validator.Value;
 
-public class PdfnameMatchesDateinameplanPlugin implements InterlisFunction {
+public class PdfnameMatchesDateinameplanIoxPlugin implements InterlisFunction {
     private LogEventFactory logger = null;
 
     @Override
