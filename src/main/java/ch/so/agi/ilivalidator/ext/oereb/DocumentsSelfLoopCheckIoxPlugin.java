@@ -16,11 +16,17 @@ import ch.interlis.iox_j.validator.Value;
 
 public class DocumentsSelfLoopCheckIoxPlugin implements InterlisFunction {
     private LogEventFactory logger = null;
+    
+//    private ObjectPool objectPool = null;
 
     @Override
     public Value evaluate(String validationKind, String usageScope, IomObject mainObj, Value[] actualArguments) {
         
         System.out.println("-------------");
+        LinkCache lc = LinkCache.getInstance(actualArguments[0].getComplexObjects());
+        
+        System.out.println(lc.getCatalog().toString());
+        
         System.out.println(usageScope);
         System.out.println(mainObj.getobjectoid());
         System.out.println(actualArguments[0].getComplexObjects());
@@ -59,6 +65,7 @@ public class DocumentsSelfLoopCheckIoxPlugin implements InterlisFunction {
             LogEventFactory logEventFactory) {
         
         logger = logEventFactory;
+//        this.objectPool = objectPool;
     }
 
 }
