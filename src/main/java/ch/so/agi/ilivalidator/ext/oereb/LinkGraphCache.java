@@ -1,5 +1,6 @@
 package ch.so.agi.ilivalidator.ext.oereb;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +23,9 @@ public class LinkGraphCache {
     // Oder Anfang und Ende und OID der Edge "o1o2"?
     private Graph<String, DefaultEdge> linkGraph;
 
-    private HashMap<String, String> duplicateEdges;
+    private List<String> duplicateEdges;
+
+    private List<String> selfLoops;
 
     private LinkGraphCache() {}
 
@@ -30,19 +33,26 @@ public class LinkGraphCache {
         if (instance == null) {
             instance = new LinkGraphCache();
             instance.linkGraph = new SimpleDirectedGraph<>(DefaultEdge.class);
-            instance.duplicateEdges = new HashMap<String, String>();
+            instance.duplicateEdges = new ArrayList<String>();
+            instance.selfLoops = new ArrayList<String>();
             
             for (IomObject iomObj : collection) {
                 String startOid = iomObj.getattrobj("Ursprung", 0).getobjectrefoid();
                 String endOid = iomObj.getattrobj("Hinweis", 0).getobjectrefoid();
                 
-//                System.out.println(startOid);
-//                System.out.println(endOid);
-                
-                DefaultEdge e = null;
-                e = Graphs.addEdgeWithVertices(instance.linkGraph, startOid, endOid);
-                if (e == null) {
-                    instance.duplicateEdges.put(startOid, endOid);
+                try {
+                    DefaultEdge e = null;
+                    e = Graphs.addEdgeWithVertices(instance.linkGraph, startOid, endOid);
+                    if (e == null) {
+                        instance.duplicateEdges.add(iomObj.getobjectoid());
+                    }
+                } catch (IllegalArgumentException e) {
+                    if (startOid.equalsIgnoreCase(endOid)) {
+                        // self loop
+                        instance.selfLoops.add(startOid);
+                    } else {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -53,8 +63,11 @@ public class LinkGraphCache {
         return linkGraph;
     }
 
-    public HashMap<String, String> getDuplicateEdges() {
+    public List<String> getDuplicateEdges() {
         return duplicateEdges;
     }
     
+    public List<String> getSelfLoops() {
+        return selfLoops;
+    }
 }

@@ -26,7 +26,7 @@ import ch.interlis.iox_j.validator.Validator;
 import ch.so.agi.ilivalidator.ext.LogCollector;
 import ch.so.agi.ilivalidator.ext.avgbs.PdfnameMatchesDateinameplanIoxPlugin;
 
-public class DocumentsSelfLoopCheckIoxPluginTest {
+public class DocumentsCycleCheckIoxPluginTest {
     private TransferDescription td=null;
     // OID
     private final static String OBJ_OID1 ="o1";
@@ -102,9 +102,9 @@ public class DocumentsSelfLoopCheckIoxPluginTest {
         Iom_jObject iomLinkAA_56=new Iom_jObject(ILI_ASSOC_A_A, "o5o6");
         iomLinkAA_56.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID5);
         iomLinkAA_56.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID6);
-        Iom_jObject iomLinkAA_67=new Iom_jObject(ILI_ASSOC_A_A, "o6o7");
-        iomLinkAA_67.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID6);
-        iomLinkAA_67.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID7);
+        Iom_jObject iomLinkAA_52=new Iom_jObject(ILI_ASSOC_A_A, "o5o2");
+        iomLinkAA_52.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID5);
+        iomLinkAA_52.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID2);
 
         ValidationConfig modelConfig=new ValidationConfig();
         LogCollector logger=new LogCollector();
@@ -112,7 +112,7 @@ public class DocumentsSelfLoopCheckIoxPluginTest {
         Settings settings=new Settings();
         
         Map<String,Class> newFunctions = new HashMap<String,Class>();
-        newFunctions.put("SO_OEREB_FunctionsExt.documentsSelfLoopCheck", DocumentsSelfLoopCheckIoxPlugin.class);
+        newFunctions.put("SO_OEREB_FunctionsExt.documentsCycleCheck", DocumentsCycleCheckIoxPlugin.class);
         settings.setTransientObject(Validator.CONFIG_CUSTOM_FUNCTIONS, newFunctions);
 
         Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
@@ -130,7 +130,7 @@ public class DocumentsSelfLoopCheckIoxPluginTest {
         validator.validate(new ObjectEvent(iomLinkAA_34));
         validator.validate(new ObjectEvent(iomLinkAA_45));
         validator.validate(new ObjectEvent(iomLinkAA_56));
-        validator.validate(new ObjectEvent(iomLinkAA_67));
+        validator.validate(new ObjectEvent(iomLinkAA_52));
         validator.validate(new EndBasketEvent());
         validator.validate(new EndTransferEvent());
     }

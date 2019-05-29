@@ -8,18 +8,18 @@ MODEL OEREB (de)
     CLASS Dokument =
       TextImWeb : TEXT*1024;
       Titel : TEXT*1024;
-      !! !!@ name = DocumentsSelfLoopCheck
+      !! !!@ name = DocumentsCycleCheck
       !! !!@ ilivalid.msg = "gaga"
-      !!SET CONSTRAINT SO_OEREB_FunctionsExt.documentsSelfLoopCheck(ALL, TextImWeb, Titel);
-      !!SET CONSTRAINT SO_OEREB_FunctionsExt.documentsSelfLoopCheck(ALL);
+      !!SET CONSTRAINT SO_OEREB_FunctionsExt.documentsCycleCheck(ALL, TextImWeb, Titel);
+      !!SET CONSTRAINT SO_OEREB_FunctionsExt.documentsCycleCheck(ALL);
     END Dokument;
     
     ASSOCIATION HinweisWeitereDokumente =
       Ursprung -- {0..*} Dokument;
       Hinweis -- {0..*} Dokument;
-      !!@ name = DocumentsSelfLoopCheck
-      !! !!@ ilivalid.msg = "Es sind falsche Verknüpfungen (self loops) vorhanden."      
-      SET CONSTRAINT SO_OEREB_FunctionsExt.documentsSelfLoopCheck(ALL);
+      !!@ name = DocumentsCycleCheck
+      !!@ ilivalid.msg = "Es sind falsche Verknüpfungen vorhanden {Ursprung} <-> {Hinweis}."      
+      SET CONSTRAINT SO_OEREB_FunctionsExt.documentsCycleCheck(ALL);
     END HinweisWeitereDokumente;  
     
   END Vorschriften;

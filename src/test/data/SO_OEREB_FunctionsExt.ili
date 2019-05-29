@@ -3,6 +3,6 @@ CONTRACTED MODEL SO_OEREB_FunctionsExt
   AT "mailto:stefan.ziegler@bd.so.ch" VERSION "2019-05-26" =
   
     !!FUNCTION documentsSelfLoopCheck (Objects: OBJECTS OF ANYCLASS; attr1: TEXT; attr2: TEXT): BOOLEAN;
-    FUNCTION documentsSelfLoopCheck (Objects: OBJECTS OF ANYCLASS): BOOLEAN;
+    FUNCTION documentsCycleCheck (Objects: OBJECTS OF ANYCLASS): BOOLEAN;
         
 END SO_OEREB_FunctionsExt.
