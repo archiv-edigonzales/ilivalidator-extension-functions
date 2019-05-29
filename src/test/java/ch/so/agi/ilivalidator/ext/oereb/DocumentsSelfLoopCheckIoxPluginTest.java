@@ -78,6 +78,15 @@ public class DocumentsSelfLoopCheckIoxPluginTest {
         Iom_jObject iomObjA_4=new Iom_jObject(ILI_CLASSA, OBJ_OID4);
         iomObjA_4.setattrvalue("TextImWeb", "doc_4.pdf");
         iomObjA_4.setattrvalue("Titel", "RRB");                                
+        Iom_jObject iomObjA_5=new Iom_jObject(ILI_CLASSA, OBJ_OID5);
+        iomObjA_5.setattrvalue("TextImWeb", "doc_5.pdf");
+        iomObjA_5.setattrvalue("Titel", "RRB");                                
+        Iom_jObject iomObjA_6=new Iom_jObject(ILI_CLASSA, OBJ_OID6);
+        iomObjA_6.setattrvalue("TextImWeb", "doc_5.pdf");
+        iomObjA_6.setattrvalue("Titel", "RRB");                                
+        Iom_jObject iomObjA_7=new Iom_jObject(ILI_CLASSA, OBJ_OID7);
+        iomObjA_7.setattrvalue("TextImWeb", "doc_7.pdf");
+        iomObjA_7.setattrvalue("Titel", "RRB");                                
         Iom_jObject iomLinkAA_12=new Iom_jObject(ILI_ASSOC_A_A, "o1o2");
         iomLinkAA_12.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID1);
         iomLinkAA_12.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID2);
@@ -87,6 +96,15 @@ public class DocumentsSelfLoopCheckIoxPluginTest {
         Iom_jObject iomLinkAA_34=new Iom_jObject(ILI_ASSOC_A_A, "o3o4");
         iomLinkAA_34.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID3);
         iomLinkAA_34.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID4);
+        Iom_jObject iomLinkAA_45=new Iom_jObject(ILI_ASSOC_A_A, "o4o5");
+        iomLinkAA_45.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID4);
+        iomLinkAA_45.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID5);
+        Iom_jObject iomLinkAA_56=new Iom_jObject(ILI_ASSOC_A_A, "o5o6");
+        iomLinkAA_56.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID5);
+        iomLinkAA_56.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID6);
+        Iom_jObject iomLinkAA_67=new Iom_jObject(ILI_ASSOC_A_A, "o6o7");
+        iomLinkAA_67.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID6);
+        iomLinkAA_67.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID7);
 
         ValidationConfig modelConfig=new ValidationConfig();
         LogCollector logger=new LogCollector();
@@ -104,9 +122,15 @@ public class DocumentsSelfLoopCheckIoxPluginTest {
         validator.validate(new ObjectEvent(iomObjA_2));
         validator.validate(new ObjectEvent(iomObjA_3));
         validator.validate(new ObjectEvent(iomObjA_4));
+        validator.validate(new ObjectEvent(iomObjA_5));
+        validator.validate(new ObjectEvent(iomObjA_6));
+        validator.validate(new ObjectEvent(iomObjA_7));
         validator.validate(new ObjectEvent(iomLinkAA_12));
         validator.validate(new ObjectEvent(iomLinkAA_23));
         validator.validate(new ObjectEvent(iomLinkAA_34));
+        validator.validate(new ObjectEvent(iomLinkAA_45));
+        validator.validate(new ObjectEvent(iomLinkAA_56));
+        validator.validate(new ObjectEvent(iomLinkAA_67));
         validator.validate(new EndBasketEvent());
         validator.validate(new EndTransferEvent());
     }

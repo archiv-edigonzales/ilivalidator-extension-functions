@@ -72,30 +72,30 @@ public class DocumentsSelfLoopCheckIoxPlugin implements InterlisFunction {
         
         // Reihenfolge des Hinzufügens von Kanten.
         // Ist das ein Problem beim Herausfinden von Fehlern?
-        Graph<String, DefaultEdge> g = new SimpleDirectedGraph<>(DefaultEdge.class);
-        DefaultEdge e = null;
-        Graphs.addEdgeWithVertices(g, "o2", "o3");
-        Graphs.addEdgeWithVertices(g, "o1", "o2");
-        Graphs.addEdgeWithVertices(g, "o3", "o4");
-
-        // bis hierhin ist der Graph connected.
-        
-        Graphs.addEdgeWithVertices(g, "o5", "o6");
-        Graphs.addEdgeWithVertices(g, "o6", "o4");
-        Graphs.addEdgeWithVertices(g, "o6", "o6"); // Wirft Exception! -> Wegkopieren. Btw: Was machen mit OID von Assoz?
-        // nicht mehr connected.
-
-        System.out.println(GraphTests.isConnected(g));
-//        System.out.println(GraphTests.hasSelfLoops(g));
-        
-        CycleDetector<String, DefaultEdge> cycleDetector = new CycleDetector<>(g);
-        System.out.println(cycleDetector.detectCycles());
-
-        
-        // Cycles werden nicht mitkopiert. 
-        ConnectivityInspector connectivityInspector = new ConnectivityInspector<>(g);
-        List<Set<String>> sets = connectivityInspector.connectedSets();
-        System.out.println(sets);
+//        Graph<String, DefaultEdge> g = new SimpleDirectedGraph<>(DefaultEdge.class);
+//        DefaultEdge e = null;
+//        Graphs.addEdgeWithVertices(g, "o2", "o3");
+//        Graphs.addEdgeWithVertices(g, "o1", "o2");
+//        Graphs.addEdgeWithVertices(g, "o3", "o4");
+//
+//        // bis hierhin ist der Graph connected.
+//        
+//        Graphs.addEdgeWithVertices(g, "o5", "o6");
+//        Graphs.addEdgeWithVertices(g, "o6", "o4");
+//        Graphs.addEdgeWithVertices(g, "o6", "o6"); // Wirft Exception! -> Wegkopieren. Btw: Was machen mit OID von Assoz?
+//        // nicht mehr connected.
+//
+//        System.out.println(GraphTests.isConnected(g));
+////        System.out.println(GraphTests.hasSelfLoops(g));
+//        
+//        CycleDetector<String, DefaultEdge> cycleDetector = new CycleDetector<>(g);
+//        System.out.println(cycleDetector.detectCycles());
+//
+//        
+//        // Cycles werden nicht mitkopiert. 
+//        ConnectivityInspector connectivityInspector = new ConnectivityInspector<>(g);
+//        List<Set<String>> sets = connectivityInspector.connectedSets();
+//        System.out.println(sets);
         /*
         JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<String, DefaultEdge>(g);
         mxHierarchicalLayout layout = new mxHierarchicalLayout(graphAdapter);
@@ -116,9 +116,11 @@ public class DocumentsSelfLoopCheckIoxPlugin implements InterlisFunction {
 
         
         System.out.println("-------------");
-        LinkCache lc = LinkCache.getInstance(actualArguments[0].getComplexObjects());
+        LinkGraphCache lc = LinkGraphCache.getInstance(actualArguments[0].getComplexObjects());
+        Graph<String, DefaultEdge> graph = lc.getGraph();
+        HashMap<String, String> duplicateEdges = lc.getDuplicateEdges();
         
-        System.out.println(lc.getCatalog().toString());
+        System.out.println(lc.getGraph().toString());
         
         System.out.println(usageScope);
         System.out.println(mainObj.getobjectoid());
