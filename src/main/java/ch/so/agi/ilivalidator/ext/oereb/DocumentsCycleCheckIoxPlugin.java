@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,11 +45,11 @@ import ch.interlis.iox_j.validator.Value;
 public class DocumentsCycleCheckIoxPlugin implements InterlisFunction {
     private LogEventFactory logger = null;
     
+    private ObjectPool objectPool = null;
+    
     @Override
-    public Value evaluate(String validationKind, String usageScope, IomObject mainObj, Value[] actualArguments) {
-        
-        System.out.println("*************************");
-        
+    public Value evaluate(String validationKind, String usageScope, IomObject mainObj, Value[] actualArguments) {   
+        System.out.println(mainObj.getobjectoid());
 //        Graph<String, DefaultEdge> g = new SimpleDirectedGraph<>(DefaultEdge.class);
 //        DefaultEdge e = null;
 //        e = Graphs.addEdgeWithVertices(g, "o1", "o2");
@@ -106,18 +107,27 @@ public class DocumentsCycleCheckIoxPlugin implements InterlisFunction {
         } catch (IOException e1) {
         }
         */
-        
-        System.out.println("*************************");
-        System.out.println("-------------");
-        
-        
-        
         try {
-            LinkGraphCache lc = LinkGraphCache.getInstance(actualArguments[0].getComplexObjects());
+            LinkGraphCache lc = LinkGraphCache.getInstance(actualArguments[0].getComplexObjects(), objectPool.hashCode());
+            
+            System.out.println("**");
+            System.out.println(lc.getHashCode());
+            System.out.println(objectPool.hashCode());
+            
+            if (objectPool.hashCode() != lc.getHashCode()) {
+                System.out.println("neue instanz");
+                Class<LinkGraphCache> clazz = LinkGraphCache.class;
+                Constructor<LinkGraphCache> cons = clazz.getDeclaredConstructor();
+                cons.setAccessible(true);
+                lc = cons.newInstance();
+                System.out.println("--");
+                System.out.println(lc.getHashCode());
+            }
+            
             Graph<String, DefaultEdge> graph = lc.getGraph();
             List<String> duplicateEdges = lc.getDuplicateEdges();
-//            List<String> selfLoops = lc.getSelfLoops(); // TODO: needed?
             
+            // Duplicate edge: two (or more) associations from document A to document B.
             if (duplicateEdges.contains(mainObj.getobjectoid())) {
                 logger.addEvent(logger.logErrorMsg("duplicate link found: " + mainObj.getobjectoid(), mainObj.getobjectoid()));
                 return new Value(false);
@@ -126,46 +136,34 @@ public class DocumentsCycleCheckIoxPlugin implements InterlisFunction {
             String startOid = mainObj.getattrobj("Ursprung", 0).getobjectrefoid();
             String endOid = mainObj.getattrobj("Hinweis", 0).getobjectrefoid();
             
-            logger.addEvent(logger.logInfoMsg("Ursprung: " + startOid, null));
-            logger.addEvent(logger.logInfoMsg("Hinweis: " + endOid, null));
+//            logger.addEvent(logger.logInfoMsg("Ursprung: " + startOid, null));
+//            logger.addEvent(logger.logInfoMsg("Hinweis: " + endOid, null));
             
+            // Self loop: An association the points from document A to document A.
             if (startOid.equals(endOid)) {
                 logger.addEvent(logger.logErrorMsg("self loop found: " + mainObj.getobjectoid(), mainObj.getobjectoid()));
                 return new Value(false);
             }   
             
+            // Cycle: Document A -> Document B -> Document C -> Document A.
+            // There is not ONE wrong edge but always several wrong ones.
+            // It is up to the user to decide.
             CycleDetector<String, DefaultEdge> cycleDetector = new CycleDetector<>(graph);
-            if (!cycleDetector.detectCycles()) {
+            Set<String> vertices = cycleDetector.findCycles();
+            System.out.println(vertices);
+            if (vertices.size() == 0) {
                 return new Value(true);
             } else {
-                String cycles = String.join(",", cycleDetector.findCycles());
-                System.out.println(cycles);
-                
-                // Durchloopen, falls aktuelle Kante dabei ist -> Fehler
-                // Was gibt es alles für brauchbare Methoden?
-                // 
-                
-                
-
-//                logger.addEvent(logger.logInfoMsg("detectCycles: " + cycleDetector.detectCycles(), null));
-
+                if (vertices.contains(startOid) && vertices.contains(endOid)) {
+                    String cycles = String.join(",", vertices);
+                    logger.addEvent(logger.logErrorMsg("object "+mainObj.getobjectoid()+" ("+startOid +" <-> "+endOid+") is part of a cycle: "+cycles+".", mainObj.getobjectoid()));
+                    return new Value(false);
+                }
             }
-            
-            
-
-
-            
-            
-            
-            
-            
         } catch (Exception e) {
             logger.addEvent(logger.logErrorMsg(e, "something went wrong", null));
             return new Value(false);
         }
-        
-        System.out.println("--------------");
-       
         return new Value(true);
     }
 
@@ -179,7 +177,12 @@ public class DocumentsCycleCheckIoxPlugin implements InterlisFunction {
             IoxValidationConfig validationConfig, ObjectPool objectPool, 
             LogEventFactory logEventFactory) {
         
+//        System.out.println("INIT");
+////        System.out.println(objectPool.hashCode());
+        
         logger = logEventFactory;
         logger.setValidationConfig(validationConfig);
+        
+        this.objectPool = objectPool;
     }
 }

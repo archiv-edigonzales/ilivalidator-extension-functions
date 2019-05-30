@@ -65,6 +65,46 @@ public class DocumentsCycleCheckIoxPluginTest {
     }
     
     @Test
+    public void no_subgraph_Ok() {
+        Iom_jObject iomObjA_1=new Iom_jObject(ILI_CLASSA, OBJ_OID1);
+        iomObjA_1.setattrvalue("TextImWeb", "doc_1.pdf");
+        iomObjA_1.setattrvalue("Titel", "RRB");        
+        Iom_jObject iomObjA_2=new Iom_jObject(ILI_CLASSA, OBJ_OID2);
+        iomObjA_2.setattrvalue("TextImWeb", "doc_2.pdf");
+        iomObjA_2.setattrvalue("Titel", "RRB");                
+        Iom_jObject iomObjA_3=new Iom_jObject(ILI_CLASSA, OBJ_OID3);
+        iomObjA_3.setattrvalue("TextImWeb", "doc_3.pdf");
+        iomObjA_3.setattrvalue("Titel", "RRB");                        
+        Iom_jObject iomLinkAA_12=new Iom_jObject(ILI_ASSOC_A_A, "o1o2");
+        iomLinkAA_12.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID1);
+        iomLinkAA_12.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID2);
+        Iom_jObject iomLinkAA_23=new Iom_jObject(ILI_ASSOC_A_A, "o2o3");
+        iomLinkAA_23.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID2);
+        iomLinkAA_23.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID3);
+
+        ValidationConfig modelConfig=new ValidationConfig();
+        LogCollector logger=new LogCollector();
+        LogEventFactory errFactory=new LogEventFactory();
+        Settings settings=new Settings();
+        
+        Map<String,Class> newFunctions = new HashMap<String,Class>();
+        newFunctions.put("SO_OEREB_FunctionsExt.documentsCycleCheck", DocumentsCycleCheckIoxPlugin.class);
+        settings.setTransientObject(Validator.CONFIG_CUSTOM_FUNCTIONS, newFunctions);
+
+        Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
+        validator.validate(new StartTransferEvent());
+        validator.validate(new StartBasketEvent(ILI_TOPIC,BID1));
+        validator.validate(new ObjectEvent(iomObjA_1));
+        validator.validate(new ObjectEvent(iomObjA_2));
+        validator.validate(new ObjectEvent(iomObjA_3));
+        validator.validate(new ObjectEvent(iomLinkAA_12));
+        validator.validate(new ObjectEvent(iomLinkAA_23));
+        validator.validate(new EndBasketEvent());
+        validator.validate(new EndTransferEvent());
+
+    }
+    
+    @Test
     public void fubar_Ok() {
         Iom_jObject iomObjA_1=new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         iomObjA_1.setattrvalue("TextImWeb", "doc_1.pdf");
@@ -105,6 +145,12 @@ public class DocumentsCycleCheckIoxPluginTest {
         Iom_jObject iomLinkAA_52=new Iom_jObject(ILI_ASSOC_A_A, "o5o2");
         iomLinkAA_52.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID5);
         iomLinkAA_52.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID2);
+        Iom_jObject iomLinkAA_37=new Iom_jObject(ILI_ASSOC_A_A, "o3o7");
+        iomLinkAA_37.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID3);
+        iomLinkAA_37.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID7);
+        Iom_jObject iomLinkAA_24=new Iom_jObject(ILI_ASSOC_A_A, "o2o4");
+        iomLinkAA_24.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID2);
+        iomLinkAA_24.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID4);
 
         ValidationConfig modelConfig=new ValidationConfig();
         LogCollector logger=new LogCollector();
@@ -131,6 +177,8 @@ public class DocumentsCycleCheckIoxPluginTest {
         validator.validate(new ObjectEvent(iomLinkAA_45));
         validator.validate(new ObjectEvent(iomLinkAA_56));
         validator.validate(new ObjectEvent(iomLinkAA_52));
+        validator.validate(new ObjectEvent(iomLinkAA_37));
+        validator.validate(new ObjectEvent(iomLinkAA_24));
         validator.validate(new EndBasketEvent());
         validator.validate(new EndTransferEvent());
     }
