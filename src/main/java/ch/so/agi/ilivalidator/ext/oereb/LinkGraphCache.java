@@ -16,56 +16,46 @@ import org.jgrapht.graph.SimpleDirectedGraph;
 import ch.interlis.iom.IomObject;
 
 public class LinkGraphCache {
-    private static LinkGraphCache instance = null;
-
-    private int hashCode;
-    
-    private Graph<String, DefaultEdge> linkGraph;
+    private Graph<String, DefaultEdge> graph;
 
     private List<String> duplicateEdges;
-    
-    private Set<String> cycles;
-  
-    private LinkGraphCache() {}
 
-    public static synchronized LinkGraphCache getInstance(Collection<IomObject> collection, int hashCode) {
-        if (instance == null) {
-            System.out.println("BAR");
+    private Set<String> cycleVertices;
 
-            instance = new LinkGraphCache();
-            instance.hashCode = hashCode;
-            instance.linkGraph = new SimpleDirectedGraph<>(DefaultEdge.class);
-            instance.duplicateEdges = new ArrayList<String>();
-            
-            for (IomObject iomObj : collection) {
-                String startOid = iomObj.getattrobj("Ursprung", 0).getobjectrefoid();
-                String endOid = iomObj.getattrobj("Hinweis", 0).getobjectrefoid();
-                
-                try {
-                    DefaultEdge e = null;
-                    e = Graphs.addEdgeWithVertices(instance.linkGraph, startOid, endOid);
-                    if (e == null) {
-                        instance.duplicateEdges.add(iomObj.getobjectoid());
-                    }
-                } catch (IllegalArgumentException e) {
-                    // Self loops throw an IllegalArgumentException.
-                    // Self loops will be handled in the InterlisFunction by 
-                    // comparing the OIDs.
+    public LinkGraphCache(Collection<IomObject> collection) {
+        graph = new SimpleDirectedGraph<>(DefaultEdge.class);
+        duplicateEdges = new ArrayList<String>();
+
+        for (IomObject iomObj : collection) {
+            String startOid = iomObj.getattrobj("Ursprung", 0).getobjectrefoid();
+            String endOid = iomObj.getattrobj("Hinweis", 0).getobjectrefoid();
+
+            try {
+                DefaultEdge e = null;
+                e = Graphs.addEdgeWithVertices(graph, startOid, endOid);
+                if (e == null) {
+                    duplicateEdges.add(iomObj.getobjectoid());
                 }
+            } catch (IllegalArgumentException e) {
+                // Self loops throw an IllegalArgumentException.
+                // Self loops will be handled in the InterlisFunction by
+                // comparing the OIDs.
             }
         }
-        return instance;
+        
+        CycleDetector<String, DefaultEdge> cycleDetector = new CycleDetector<>(graph);
+        cycleVertices = cycleDetector.findCycles();
     }
-    
-    public int getHashCode() {
-        return hashCode;
-    }
-    
+
     public Graph<String, DefaultEdge> getGraph() {
-        return linkGraph;
+        return graph;
     }
 
     public List<String> getDuplicateEdges() {
         return duplicateEdges;
+    }
+    
+    public Set<String> getCycleVertices() {
+        return cycleVertices;
     }
 }
