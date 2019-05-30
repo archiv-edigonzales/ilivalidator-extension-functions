@@ -8,6 +8,10 @@ MODEL GB2AV (de)
     CLASS AVMutation =
       Beschrieb : TEXT*50;
       DateinamePlan : TEXT*80;
+      !! !!@ name = dateinameplanEndsWithPdf
+      !! !!@ ilivalid.msg = "Die Endung von Dateinameplan '{DateinamePlan}' ist nicht 'pdf'."
+      !!MANDATORY CONSTRAINT Text.endsWith(DateinamePlan, "aaaapdf");
+
       !!@ name = pdfnameMatchesDateinameplan
       !!@ ilivalid.msg = "Dateinameplan '{DateinamePlan}' im XML passt nicht zum Namen des gelieferten PDF."
       MANDATORY CONSTRAINT SO_AVGBS_FunctionsExt.pdfnameMatchesDateinameplan(DateinamePlan);

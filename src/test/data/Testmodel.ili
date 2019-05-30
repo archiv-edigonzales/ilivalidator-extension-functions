@@ -19,7 +19,7 @@ CONTRACTED MODEL Testmodel
         
         CLASS ClassB =
             attr1 : TEXT;
-            attr2 : TEXT;
+            dateattr2 : TEXT*10;
         END ClassB;
                       
     END Topic;

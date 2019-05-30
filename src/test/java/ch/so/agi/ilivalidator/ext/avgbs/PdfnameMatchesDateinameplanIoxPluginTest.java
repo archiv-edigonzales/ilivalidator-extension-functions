@@ -1,6 +1,7 @@
 package ch.so.agi.ilivalidator.ext.avgbs;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,8 @@ public class PdfnameMatchesDateinameplanIoxPluginTest {
     private final static String ILI_CLASSA=ILI_TOPIC+".AVMutation";
     // START BASKET EVENT
     private final static String BID1="b1";
+    
+    public final String SETTING_DATAFILE="ch.so.agi.ilivalidator.ext.avgbs.datafile";
 
     @Before
     public void setUp() throws Exception {
@@ -64,6 +67,7 @@ public class PdfnameMatchesDateinameplanIoxPluginTest {
         Map<String,Class> newFunctions = new HashMap<String,Class>();
         newFunctions.put("SO_AVGBS_FunctionsExt.pdfnameMatchesDateinameplan", PdfnameMatchesDateinameplanIoxPlugin.class);
         settings.setTransientObject(Validator.CONFIG_CUSTOM_FUNCTIONS, newFunctions);
+        settings.setValue(SETTING_DATAFILE, "SO0200002401_1622_20190416.pdf");
         Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
         validator.validate(new StartTransferEvent());
         validator.validate(new StartBasketEvent(ILI_TOPIC,BID1));
@@ -71,9 +75,32 @@ public class PdfnameMatchesDateinameplanIoxPluginTest {
         validator.validate(new EndBasketEvent());
         validator.validate(new EndTransferEvent());
 
-        System.out.println(logger.getErrs());
-        System.out.println(logger.getErrs().size());
-        
-        System.out.println("bar");
+        assertTrue(logger.getErrs().size()==0);
+    }
+    
+    @Test
+    public void pdfnameMatchesDateinameplan_Fail() {
+        Iom_jObject iomObjA = new Iom_jObject(ILI_CLASSA, OBJ_OID1);
+        iomObjA.setattrvalue("Beschrieb", "Vereinigung.");
+        iomObjA.setattrvalue("DateinamePlan", "SO0200002401_1622_20190416.pdf");
+        ValidationConfig modelConfig = new ValidationConfig();
+        modelConfig.mergeIliMetaAttrs(td);
+        LogCollector logger = new LogCollector();
+        LogEventFactory errFactory = new LogEventFactory();
+        Settings settings = new Settings();
+        Map<String,Class> newFunctions = new HashMap<String,Class>();
+        newFunctions.put("SO_AVGBS_FunctionsExt.pdfnameMatchesDateinameplan", PdfnameMatchesDateinameplanIoxPlugin.class);
+        settings.setTransientObject(Validator.CONFIG_CUSTOM_FUNCTIONS, newFunctions);
+        settings.setValue(SETTING_DATAFILE, "XX0200002401_1622_20190416.pdf");
+        Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
+        validator.validate(new StartTransferEvent());
+        validator.validate(new StartBasketEvent(ILI_TOPIC,BID1));
+        validator.validate(new ObjectEvent(iomObjA));
+        validator.validate(new EndBasketEvent());
+        validator.validate(new EndTransferEvent());
+
+        assertTrue(logger.getErrs().size()==2);
+        assertTrue(logger.getErrs().get(0).getEventMsg().equals("SO0200002401_1622_20190416.pdf <-> XX0200002401_1622_20190416.pdf"));
+        assertTrue(logger.getErrs().get(1).getEventMsg().equals("Dateinameplan 'SO0200002401_1622_20190416.pdf' im XML passt nicht zum Namen des gelieferten PDF."));
     }
 }

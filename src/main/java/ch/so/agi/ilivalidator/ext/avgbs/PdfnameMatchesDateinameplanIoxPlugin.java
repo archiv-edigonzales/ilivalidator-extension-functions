@@ -31,25 +31,15 @@ public class PdfnameMatchesDateinameplanIoxPlugin implements InterlisFunction {
             return Value.createSkipEvaluation();
         }
         
-        String dateinameplanValue = actualArguments[0].getValue();
-
-        if (!dateinameplanValue.toLowerCase().endsWith(".pdf")) {
-            logger.addEvent(logger.logErrorMsg("Attribut 'DateinamePlan' endet nicht mit '.pdf': " + dateinameplanValue, mainObj.getobjectoid()));
+        String dateinameplanValue = actualArguments[0].getValue();                
+        String dataFileName = settings.getValue("ch.so.agi.ilivalidator.ext.avgbs.datafile");
+        
+        if (!dateinameplanValue.equals(dataFileName)) {
+            logger.addEvent(logger.logErrorMsg(dateinameplanValue + " <-> " + dataFileName, mainObj.getobjectoid()));
             return new Value(false);
         }
-                
-        String dateinameplanNoExt = dateinameplanValue.substring(0, dateinameplanValue.length()-4);
-//        String dataFileName = settings.getValue();
         
-        
-        
-        
-        logger.addEvent(logger.logInfoMsg("dateinameplanValue: " + dateinameplanValue, mainObj.getobjectoid()));
-        logger.addEvent(logger.logErrorMsg("fubar"));
-        logger.addEvent(logger.logErrorMsg(dateinameplanValue));
-
-        
-        return new Value(false); 
+        return new Value(true);
     }
 
     @Override
