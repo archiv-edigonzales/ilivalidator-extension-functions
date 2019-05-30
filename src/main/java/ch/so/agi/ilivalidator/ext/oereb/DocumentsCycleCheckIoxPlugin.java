@@ -19,6 +19,13 @@ public class DocumentsCycleCheckIoxPlugin implements InterlisFunction {
     
     @Override
     public Value evaluate(String validationKind, String usageScope, IomObject mainObj, Value[] actualArguments) {
+        if (actualArguments[0].skipEvaluation()) {
+            return actualArguments[0];
+        }
+        if (actualArguments[0].isUndefined()) {
+            return Value.createSkipEvaluation();
+        }
+        
         try {
             LinkGraphCache lc = new LinkGraphCache(actualArguments[0].getComplexObjects());
             List<String> duplicateEdges = lc.getDuplicateEdges();
