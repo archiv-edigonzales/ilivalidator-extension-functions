@@ -21,6 +21,8 @@ public class PdfnameMatchesDateinameplanIoxPlugin implements InterlisFunction {
     private LogEventFactory logger = null;
     
     private Settings settings = null;
+    
+    private final String SETTING_PDFFILE = "ch.so.agi.ilivalidator.ext.avgbs.pdffile"; 
 
     @Override
     public Value evaluate(String validationKind, String usageScope, IomObject mainObj, Value[] actualArguments) {
@@ -32,7 +34,7 @@ public class PdfnameMatchesDateinameplanIoxPlugin implements InterlisFunction {
         }
         
         String dateinameplanValue = actualArguments[0].getValue();                
-        String dataFileName = settings.getValue("ch.so.agi.ilivalidator.ext.avgbs.datafile");
+        String dataFileName = settings.getValue(SETTING_PDFFILE);
         
         if (!dateinameplanValue.equals(dataFileName)) {
             logger.addEvent(logger.logErrorMsg(dateinameplanValue + " <-> " + dataFileName, mainObj.getobjectoid()));

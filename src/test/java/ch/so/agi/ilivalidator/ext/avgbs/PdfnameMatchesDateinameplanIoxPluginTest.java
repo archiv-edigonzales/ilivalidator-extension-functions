@@ -37,7 +37,7 @@ public class PdfnameMatchesDateinameplanIoxPluginTest {
     // START BASKET EVENT
     private final static String BID1="b1";
     
-    public final String SETTING_DATAFILE="ch.so.agi.ilivalidator.ext.avgbs.datafile";
+    public final String SETTING_PDFFILE="ch.so.agi.ilivalidator.ext.avgbs.pdffile";
 
     @Before
     public void setUp() throws Exception {
@@ -67,7 +67,7 @@ public class PdfnameMatchesDateinameplanIoxPluginTest {
         Map<String,Class> newFunctions = new HashMap<String,Class>();
         newFunctions.put("SO_AVGBS_FunctionsExt.pdfnameMatchesDateinameplan", PdfnameMatchesDateinameplanIoxPlugin.class);
         settings.setTransientObject(Validator.CONFIG_CUSTOM_FUNCTIONS, newFunctions);
-        settings.setValue(SETTING_DATAFILE, "SO0200002401_1622_20190416.pdf");
+        settings.setValue(SETTING_PDFFILE, "SO0200002401_1622_20190416.pdf");
         Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
         validator.validate(new StartTransferEvent());
         validator.validate(new StartBasketEvent(ILI_TOPIC,BID1));
@@ -91,7 +91,7 @@ public class PdfnameMatchesDateinameplanIoxPluginTest {
         Map<String,Class> newFunctions = new HashMap<String,Class>();
         newFunctions.put("SO_AVGBS_FunctionsExt.pdfnameMatchesDateinameplan", PdfnameMatchesDateinameplanIoxPlugin.class);
         settings.setTransientObject(Validator.CONFIG_CUSTOM_FUNCTIONS, newFunctions);
-        settings.setValue(SETTING_DATAFILE, "XX0200002401_1622_20190416.pdf");
+        settings.setValue(SETTING_PDFFILE, "XX0200002401_1622_20190416.pdf");
         Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
         validator.validate(new StartTransferEvent());
         validator.validate(new StartBasketEvent(ILI_TOPIC,BID1));
