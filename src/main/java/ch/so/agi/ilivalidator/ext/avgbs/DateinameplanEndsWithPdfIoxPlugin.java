@@ -10,20 +10,15 @@ import ch.interlis.iox_j.validator.ObjectPool;
 import ch.interlis.iox_j.validator.Value;
 
 /**
- * Funktioniert nur wenn in den Settings der Name der zu prüfenden
- * Datei mitgeliefert wird. Im ilivalidator web service wird das 
- * gemacht. Standalone wird es nicht funktionieren.
+ * Die gleiche Prüfung kann eventuell (zu prüfen) mit den im ilivalidator eingebauten
+ * Text-Funktionen durchgeführt werden. 
  * 
  * @author Stefan Ziegler / AGI SO
  *
  */
-public class PdfnameMatchesDateinameplanIoxPlugin implements InterlisFunction {
+public class DateinameplanEndsWithPdfIoxPlugin implements InterlisFunction {
     private LogEventFactory logger = null;
     
-    private Settings settings = null;
-    
-    private final String SETTING_PDFFILE = "ch.so.agi.ilivalidator.ext.avgbs.pdffile"; 
-
     @Override
     public Value evaluate(String validationKind, String usageScope, IomObject mainObj, Value[] actualArguments) {
         if (actualArguments[0].skipEvaluation()) {
@@ -34,18 +29,18 @@ public class PdfnameMatchesDateinameplanIoxPlugin implements InterlisFunction {
         }
         
         String dateinameplanValue = actualArguments[0].getValue();                
-        String dataFileName = settings.getValue(SETTING_PDFFILE);
         
-        if (!dateinameplanValue.equals(dataFileName)) {
-            logger.addEvent(logger.logErrorMsg(dateinameplanValue + " <-> " + dataFileName, mainObj.getobjectoid()));
+        if (dateinameplanValue.toLowerCase().endsWith(".pdf")) {
+            return new Value(true);
+        } else {
+            logger.addEvent(logger.logErrorMsg("Die Dateiendung von 'Dateinameplan' ist nicht '.pdf'.", mainObj.getobjectoid()));
             return new Value(false);
-        }        
-        return new Value(true);
+        }
     }
 
     @Override
     public String getQualifiedIliName() {
-        return "SO_AVGBS_FunctionsExt.pdfnameMatchesDateinameplan";
+        return "SO_AVGBS_FunctionsExt.dateinameplandEndsWithPdf";
     }
 
     @Override
@@ -53,10 +48,8 @@ public class PdfnameMatchesDateinameplanIoxPlugin implements InterlisFunction {
             IoxValidationConfig validationConfig, ObjectPool objectPool, 
             LogEventFactory logEventFactory) {
 
-        logger=logEventFactory;        
-        logger.setValidationConfig(validationConfig);       
-        
-        this.settings = settings;
+        logger=logEventFactory;
+        logger.setValidationConfig(validationConfig);        
     }
 
 }
