@@ -33,14 +33,14 @@ public class DateinameplanEndsWithPdfIoxPlugin implements InterlisFunction {
         if (dateinameplanValue.toLowerCase().endsWith(".pdf")) {
             return new Value(true);
         } else {
-            logger.addEvent(logger.logErrorMsg("Die Dateiendung von 'Dateinameplan' ist nicht '.pdf'.", mainObj.getobjectoid()));
+            //logger.addEvent(logger.logErrorMsg("Die Dateiendung von 'Dateinameplan' ist nicht '.pdf'.", mainObj.getobjectoid()));
             return new Value(false);
         }
     }
 
     @Override
     public String getQualifiedIliName() {
-        return "SO_AVGBS_FunctionsExt.dateinameplandEndsWithPdf";
+        return "SO_AVGBS_FunctionsExt.dateinameplanEndsWithPdf";
     }
 
     @Override

@@ -15,6 +15,10 @@ MODEL GB2AV (de)
       !!@ name = pdfnameMatchesDateinameplan
       !!@ ilivalid.msg = "Dateinameplan '{DateinamePlan}' im XML passt nicht zum Namen des gelieferten PDF."
       MANDATORY CONSTRAINT SO_AVGBS_FunctionsExt.pdfnameMatchesDateinameplan(DateinamePlan);
+
+      !!@ name = dateinameplanEndsWithPdf
+      !!@ ilivalid.msg = "Die Dateiendung von '{DateinamePlan}' ist nicht '.pdf'."
+      MANDATORY CONSTRAINT SO_AVGBS_FunctionsExt.dateinameplanEndsWithPdf(DateinamePlan);
     END AVMutation;
   END Mutationstabelle;
 
