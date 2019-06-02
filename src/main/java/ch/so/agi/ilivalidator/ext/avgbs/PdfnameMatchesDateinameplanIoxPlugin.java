@@ -10,9 +10,9 @@ import ch.interlis.iox_j.validator.ObjectPool;
 import ch.interlis.iox_j.validator.Value;
 
 /**
- * Funktioniert nur wenn in den Settings der Name der zu prüfenden
+ * Funktioniert nur wenn in den Settings der Name der zu PDF-
  * Datei mitgeliefert wird. Im ilivalidator web service wird das 
- * gemacht. Standalone wird es nicht funktionieren.
+ * gemacht (kann das gemacht werden). Standalone wird es nicht funktionieren.
  * 
  * @author Stefan Ziegler / AGI SO
  *
