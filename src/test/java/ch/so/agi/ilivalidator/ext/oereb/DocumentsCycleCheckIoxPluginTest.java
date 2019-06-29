@@ -239,7 +239,7 @@ public class DocumentsCycleCheckIoxPluginTest {
 //        iomLinkAA_23_duplicate.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID2);
 //        iomLinkAA_23_duplicate.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID3);
         
-        Iom_jObject iomLinkAA_12=new Iom_jObject(ILI_ASSOC_A_A, "o1o2");
+        Iom_jObject iomLinkAA_12=new Iom_jObject(ILI_ASSOC_A_A, null);
         Iom_jObject o1Ref=new Iom_jObject("REF", null);
         o1Ref.setobjectrefoid(OBJ_OID1);
         Iom_jObject o2Ref=new Iom_jObject("REF", null);
@@ -247,14 +247,13 @@ public class DocumentsCycleCheckIoxPluginTest {
         iomLinkAA_12.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, o1Ref);
         iomLinkAA_12.addattrobj(ILI_ASSOC_AA_A_HINWEIS, o2Ref);
         
-        Iom_jObject iomLinkAA_23=new Iom_jObject(ILI_ASSOC_A_A, "o2o3");
+        Iom_jObject iomLinkAA_23=new Iom_jObject(ILI_ASSOC_A_A, null);
         Iom_jObject o3Ref=new Iom_jObject("REF", null);
         o3Ref.setobjectrefoid(OBJ_OID3);
         iomLinkAA_23.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, o2Ref);
         iomLinkAA_23.addattrobj(ILI_ASSOC_AA_A_HINWEIS, o3Ref);
 
-        Iom_jObject iomLinkAA_23_duplicate=new Iom_jObject(ILI_ASSOC_A_A, "o2o3_duplicate");
-        o3Ref.setobjectrefoid(OBJ_OID3);
+        Iom_jObject iomLinkAA_23_duplicate=new Iom_jObject(ILI_ASSOC_A_A, null);
         iomLinkAA_23_duplicate.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, o2Ref);
         iomLinkAA_23_duplicate.addattrobj(ILI_ASSOC_AA_A_HINWEIS, o3Ref);
 
