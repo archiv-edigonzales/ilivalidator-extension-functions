@@ -78,6 +78,8 @@ public class DocumentsCycleCheckIoxPlugin implements InterlisFunction {
         logger = logEventFactory;
         logger.setValidationConfig(validationConfig);
         
+        System.out.println(settings.getTransientObject(InterlisFunction.IOX_DATA_POOL));
+        
         this.objectPool = objectPool;
     }
 }
