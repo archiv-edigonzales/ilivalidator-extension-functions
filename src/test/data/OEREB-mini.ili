@@ -19,7 +19,7 @@ MODEL OEREB (de)
       Hinweis -- {0..*} Dokument;
       !! !!@ name = DocumentsCycleCheck
       !! !!@ ilivalid.msg = "Es sind falsche Verknüpfungen vorhanden {Ursprung} <-> {Hinweis}."      
-      !!SET CONSTRAINT SO_OEREB_FunctionsExt.documentsCycleCheck(ALL);
+      SET CONSTRAINT SO_OEREB_FunctionsExt.documentsCycleCheck(ALL);
     END HinweisWeitereDokumente;  
     
   END Vorschriften;

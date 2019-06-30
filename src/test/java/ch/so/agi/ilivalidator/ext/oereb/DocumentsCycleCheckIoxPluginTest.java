@@ -64,17 +64,72 @@ public class DocumentsCycleCheckIoxPluginTest {
         assertNotNull(td);
     }
     
+    @Test 
+    public void methodNew() {
+        Iom_jObject iomObjA_1=new Iom_jObject(ILI_CLASSA, OBJ_OID1);
+        Iom_jObject iomObjA_2=new Iom_jObject(ILI_CLASSA, OBJ_OID2);
+        
+        Iom_jObject iomLinkAA_12=new Iom_jObject(ILI_ASSOC_A_A, null);
+        Iom_jObject o1Ref=new Iom_jObject("REF", null);
+        o1Ref.setobjectrefoid(OBJ_OID1);
+        Iom_jObject o2Ref=new Iom_jObject("REF", null);
+        o2Ref.setobjectrefoid(OBJ_OID2);
+        
+        iomLinkAA_12.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, o1Ref);
+        iomLinkAA_12.addattrobj(ILI_ASSOC_AA_A_HINWEIS, o2Ref);
+
+        ValidationConfig modelConfig=new ValidationConfig();
+        LogCollector logger=new LogCollector();
+        LogEventFactory errFactory=new LogEventFactory();
+        Settings settings=new Settings();
+
+        Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
+        validator.validate(new StartTransferEvent());
+        validator.validate(new StartBasketEvent(ILI_TOPIC,BID1));
+        validator.validate(new ObjectEvent(iomObjA_1));
+        validator.validate(new ObjectEvent(iomObjA_2));
+        validator.validate(new ObjectEvent(iomLinkAA_12));
+        validator.validate(new EndBasketEvent());
+        validator.validate(new EndTransferEvent());
+    }
+    
+    
+    @Test 
+    public void methodDeprecated() {
+        Iom_jObject iomObjA_1=new Iom_jObject(ILI_CLASSA, OBJ_OID1);
+        Iom_jObject iomObjA_2=new Iom_jObject(ILI_CLASSA, OBJ_OID2);
+        
+        Iom_jObject iomLinkAA_12=new Iom_jObject(ILI_ASSOC_A_A, null);
+        iomLinkAA_12.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID1);
+        iomLinkAA_12.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID2);
+
+        ValidationConfig modelConfig=new ValidationConfig();
+        LogCollector logger=new LogCollector();
+        LogEventFactory errFactory=new LogEventFactory();
+        Settings settings=new Settings();
+
+        Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
+        validator.validate(new StartTransferEvent());
+        validator.validate(new StartBasketEvent(ILI_TOPIC,BID1));
+        validator.validate(new ObjectEvent(iomObjA_1));
+        validator.validate(new ObjectEvent(iomObjA_2));
+        validator.validate(new ObjectEvent(iomLinkAA_12));
+        validator.validate(new EndBasketEvent());
+        validator.validate(new EndTransferEvent());
+    }
+    
+    
     @Test
     public void fubar( ) {
         Iom_jObject iomObjA_1=new Iom_jObject(ILI_CLASSA, OBJ_OID1);
-        iomObjA_1.setattrvalue("TextImWeb", "doc_1.pdf");
-        iomObjA_1.setattrvalue("Titel", "RRB");        
+//        iomObjA_1.setattrvalue("TextImWeb", "doc_1.pdf");
+//        iomObjA_1.setattrvalue("Titel", "RRB");        
         Iom_jObject iomObjA_2=new Iom_jObject(ILI_CLASSA, OBJ_OID2);
-        iomObjA_2.setattrvalue("TextImWeb", "doc_2.pdf");
-        iomObjA_2.setattrvalue("Titel", "RRB");                
+//        iomObjA_2.setattrvalue("TextImWeb", "doc_2.pdf");
+//        iomObjA_2.setattrvalue("Titel", "RRB");                
         Iom_jObject iomObjA_3=new Iom_jObject(ILI_CLASSA, OBJ_OID3);
-        iomObjA_3.setattrvalue("TextImWeb", "doc_3.pdf");
-        iomObjA_3.setattrvalue("Titel", "RRB");                  
+//        iomObjA_3.setattrvalue("TextImWeb", "doc_3.pdf");
+//        iomObjA_3.setattrvalue("Titel", "RRB");                  
 
         Iom_jObject iomLinkAA_12=new Iom_jObject(ILI_ASSOC_A_A, null);
         Iom_jObject o1Ref=new Iom_jObject("REF", null);
@@ -111,6 +166,29 @@ public class DocumentsCycleCheckIoxPluginTest {
         validator.validate(new EndTransferEvent());
 
 //        assertTrue(logger.getErrs().size()==0);
+    }
+    
+    @Test
+    public void standAloneAsso_NtoN_Ok() {
+        Iom_jObject iomObjE=new Iom_jObject(ILI_CLASSA, OBJ_OID1);
+        Iom_jObject iomObjF=new Iom_jObject(ILI_CLASSA, OBJ_OID2);
+        Iom_jObject iomLinkEF=new Iom_jObject(ILI_ASSOC_A_A, null);
+        iomLinkEF.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID1);
+        iomLinkEF.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID2);
+        ValidationConfig modelConfig=new ValidationConfig();
+        LogCollector logger=new LogCollector();
+        LogEventFactory errFactory=new LogEventFactory();
+        Settings settings=new Settings();
+//        Validator validator=new Validator(td, modelConfig,logger,errFactory,settings);
+        Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
+
+        validator.validate(new StartTransferEvent());
+        validator.validate(new StartBasketEvent(ILI_TOPIC,"b1"));
+        validator.validate(new ObjectEvent(iomObjE));
+        validator.validate(new ObjectEvent(iomObjF));
+        validator.validate(new ObjectEvent(iomLinkEF));
+        validator.validate(new EndBasketEvent());
+        validator.validate(new EndTransferEvent());
     }
     
     @Test
