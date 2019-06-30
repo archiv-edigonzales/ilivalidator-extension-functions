@@ -99,7 +99,7 @@ public class DocumentsCycleCheckIoxPluginTest {
         Iom_jObject iomObjA_1=new Iom_jObject(ILI_CLASSA, OBJ_OID1);
         Iom_jObject iomObjA_2=new Iom_jObject(ILI_CLASSA, OBJ_OID2);
         
-        Iom_jObject iomLinkAA_12=new Iom_jObject(ILI_ASSOC_A_A, null);
+        Iom_jObject iomLinkAA_12=new Iom_jObject(ILI_ASSOC_A_A, "1");
         iomLinkAA_12.addattrobj(ILI_ASSOC_AA_A_URSPRUNG, "REF").setobjectrefoid(OBJ_OID1);
         iomLinkAA_12.addattrobj(ILI_ASSOC_AA_A_HINWEIS, "REF").setobjectrefoid(OBJ_OID2);
 
@@ -107,6 +107,10 @@ public class DocumentsCycleCheckIoxPluginTest {
         LogCollector logger=new LogCollector();
         LogEventFactory errFactory=new LogEventFactory();
         Settings settings=new Settings();
+
+        Map<String,Class> newFunctions = new HashMap<String,Class>();
+        newFunctions.put("SO_OEREB_FunctionsExt.documentsCycleCheck", DocumentsCycleCheckIoxPlugin.class);
+        settings.setTransientObject(Validator.CONFIG_CUSTOM_FUNCTIONS, newFunctions);
 
         Validator validator=new Validator(td, modelConfig, logger, errFactory, new PipelinePool(), settings);
         validator.validate(new StartTransferEvent());
