@@ -17,8 +17,8 @@ MODEL OEREB (de)
     ASSOCIATION HinweisWeitereDokumente =
       Ursprung -- {0..*} Dokument;
       Hinweis -- {0..*} Dokument;
-      !! !!@ name = DocumentsCycleCheck
-      !! !!@ ilivalid.msg = "Es sind falsche Verknüpfungen vorhanden {Ursprung} <-> {Hinweis}."      
+      !!@ name = DocumentsCycleCheck
+      !!@ ilivalid.msg = "Es sind falsche Verknüpfungen vorhanden {Ursprung} <-> {Hinweis}."      
       SET CONSTRAINT SO_OEREB_FunctionsExt.documentsCycleCheck(ALL);
     END HinweisWeitereDokumente;  
     

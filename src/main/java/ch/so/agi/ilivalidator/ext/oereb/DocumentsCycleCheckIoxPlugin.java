@@ -7,6 +7,7 @@ import ch.ehi.basics.settings.Settings;
 import ch.interlis.ili2c.metamodel.TransferDescription;
 import ch.interlis.iom.IomObject;
 import ch.interlis.iox.IoxValidationConfig;
+import ch.interlis.iox_j.PipelinePool;
 import ch.interlis.iox_j.logging.LogEventFactory;
 import ch.interlis.iox_j.validator.InterlisFunction;
 import ch.interlis.iox_j.validator.ObjectPool;
@@ -16,6 +17,8 @@ public class DocumentsCycleCheckIoxPlugin implements InterlisFunction {
     private LogEventFactory logger = null;
     
     private ObjectPool objectPool = null;
+    
+    public static final String CACHE="LinkGraphCache"; 
     
     @Override
     public Value evaluate(String validationKind, String usageScope, IomObject mainObj, Value[] actualArguments) {
@@ -28,20 +31,13 @@ public class DocumentsCycleCheckIoxPlugin implements InterlisFunction {
         
         try {
             LinkGraphCache lc = new LinkGraphCache(actualArguments[0].getComplexObjects());
-            List<String> duplicateEdges = lc.getDuplicateEdges();
-            
-            // Duplicate edge: two (or more) associations from document A to document B.
-            if (duplicateEdges.contains(mainObj.getobjectoid())) {
-                logger.addEvent(logger.logErrorMsg("duplicate edge found: " + mainObj.getobjectoid(), mainObj.getobjectoid()));
-                return new Value(false);
-            }
             
             String startOid = mainObj.getattrobj("Ursprung", 0).getobjectrefoid();
             String endOid = mainObj.getattrobj("Hinweis", 0).getobjectrefoid();
             
             // Self loop: An association the points from document A to document A.
             if (startOid.equals(endOid)) {
-                logger.addEvent(logger.logErrorMsg("self loop found: " + mainObj.getobjectoid(), mainObj.getobjectoid()));
+                logger.addEvent(logger.logErrorMsg("Self loop found. Start OID: " + startOid + ". " + "End OID: " + endOid + ".", mainObj.getobjectoid()));
                 return new Value(false);
             }   
             
@@ -54,7 +50,7 @@ public class DocumentsCycleCheckIoxPlugin implements InterlisFunction {
             } else {
                 if (vertices.contains(startOid) && vertices.contains(endOid)) {
                     String cycles = String.join(",", vertices);
-                    logger.addEvent(logger.logErrorMsg("object "+mainObj.getobjectoid()+" ("+startOid +" <-> "+endOid+") is part of a cycle: "+cycles+".", mainObj.getobjectoid()));
+                    logger.addEvent(logger.logErrorMsg("("+startOid +" <-> "+endOid+") is part of a cycle: "+cycles+".", mainObj.getobjectoid()));
                     return new Value(false);
                 }
             }
@@ -78,7 +74,20 @@ public class DocumentsCycleCheckIoxPlugin implements InterlisFunction {
         logger = logEventFactory;
         logger.setValidationConfig(validationConfig);
         
-        System.out.println(settings.getTransientObject(InterlisFunction.IOX_DATA_POOL));
+//        System.out.println(settings.getTransientObject(InterlisFunction.IOX_DATA_POOL));
+        
+        PipelinePool pipelinePool = (PipelinePool) settings.getTransientObject(InterlisFunction.IOX_DATA_POOL);
+
+        System.out.println(pipelinePool.toString());
+//        System.out.println(pipelinePool.getElements());
+//        System.out.println(pipelinePool.getIntermediateValue(CACHE));
+        
+        if (pipelinePool.getIntermediateValue(CACHE, CACHE) == null) {
+            System.out.println("set");
+            pipelinePool.setIntermediateValue(CACHE, CACHE, "foo");
+        }
+        System.out.println(pipelinePool.getIntermediateValue(CACHE, CACHE));
+        System.out.println("**");
         
         this.objectPool = objectPool;
     }

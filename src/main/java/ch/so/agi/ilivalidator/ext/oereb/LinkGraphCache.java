@@ -18,13 +18,10 @@ import ch.interlis.iom.IomObject;
 public class LinkGraphCache {
     private Graph<String, DefaultEdge> graph;
 
-    private List<String> duplicateEdges;
-
     private Set<String> cycleVertices;
 
     public LinkGraphCache(Collection<IomObject> collection) {
         graph = new SimpleDirectedGraph<>(DefaultEdge.class);
-        duplicateEdges = new ArrayList<String>();
 
         for (IomObject iomObj : collection) {
             String startOid = iomObj.getattrobj("Ursprung", 0).getobjectrefoid();
@@ -34,7 +31,7 @@ public class LinkGraphCache {
                 DefaultEdge e = null;
                 e = Graphs.addEdgeWithVertices(graph, startOid, endOid);
                 if (e == null) {
-                    duplicateEdges.add(iomObj.getobjectoid());
+                    // Duplicate edge found. This is handled with built-in ilivalidator functions.
                 }
             } catch (IllegalArgumentException e) {
                 // Self loops throw an IllegalArgumentException.
@@ -49,10 +46,6 @@ public class LinkGraphCache {
 
     public Graph<String, DefaultEdge> getGraph() {
         return graph;
-    }
-
-    public List<String> getDuplicateEdges() {
-        return duplicateEdges;
     }
     
     public Set<String> getCycleVertices() {
