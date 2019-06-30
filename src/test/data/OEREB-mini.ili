@@ -8,10 +8,6 @@ MODEL OEREB (de)
     CLASS Dokument =
       TextImWeb : TEXT*1024;
       Titel : TEXT*1024;
-      !! !!@ name = DocumentsCycleCheck
-      !! !!@ ilivalid.msg = "gaga"
-      !!SET CONSTRAINT SO_OEREB_FunctionsExt.documentsCycleCheck(ALL, TextImWeb, Titel);
-      !!SET CONSTRAINT SO_OEREB_FunctionsExt.documentsCycleCheck(ALL);
     END Dokument;
     
     ASSOCIATION HinweisWeitereDokumente =
